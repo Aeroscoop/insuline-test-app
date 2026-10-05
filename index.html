@@ -69,6 +69,9 @@
     <section id="logbook-screen" class="screen">
       <div class="card">
         <h2>Logboek</h2>
+        <div id="patient-info-display" class="patient-header-info" style="margin-bottom: 16px; font-weight: bold; font-size: 1.1rem; color: #333;">
+          Patiënt: <span id="logbook-patient-name">Naam niet ingevuld</span>
+        </div>
         <div id="log-list">
           <!-- Dynamisch gevuld -->
         </div>
@@ -77,7 +80,7 @@
           <button type="button" class="btn btn-outline" onclick="exportJSON()">Export JSON</button>
           <button type="button" class="btn btn-outline" onclick="triggerImportJSON()">Import JSON</button>
           <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="handleImportJSON(event)">
-          <button type="button" class="btn btn-secondary" onclick="printLogbook()">Print logboek</button>
+          <button type="button" class="btn btn-primary" onclick="printLogbook()">Rapport (PDF)</button>
         </div>
       </div>
     </section>

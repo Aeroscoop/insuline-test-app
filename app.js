@@ -6,6 +6,7 @@ const STORAGE_KEY_SETTINGS = 'app_settings';
 const STORAGE_KEY_LOGS = 'app_logs';
 
 const DEFAULT_SETTINGS = {
+  patient_name: '',
   streefwaarde: 5.5,
   lageGlucoseGrens: 4.0,
   khr: 10.0,
@@ -26,6 +27,7 @@ const DEFAULT_SETTINGS = {
  * Definitions list for UI generation of settings
  */
 const SETTING_DEFINITIONS = [
+  { key: 'patient_name', label: 'Naam patiënt', type: 'text', default: '', help: 'Ingevulde naam wordt getoond in het logboek en rapport.' },
   { key: 'streefwaarde', label: 'Streefwaarde (mmol/L)', type: 'number', step: '0.1', default: 5.5 },
   { key: 'lageGlucoseGrens', label: 'Lage glucosegrens (mmol/L)', type: 'number', step: '0.1', default: 4.0 },
   { key: 'khr', label: 'Koolhydraat-ratio KhR (g/E)', type: 'number', step: '0.1', default: 10.0, condition: s => s.modus === 'enkel' },
@@ -283,6 +285,12 @@ function renderSettingsForm() {
         radioContainer.appendChild(lbl);
       });
       group.appendChild(radioContainer);
+    } else if (def.type === 'text') {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.id = `setting-${def.key}`;
+      input.value = settings[def.key] || '';
+      group.appendChild(input);
     } else {
       const input = document.createElement('input');
       input.type = 'text';
@@ -380,6 +388,11 @@ function saveSettingsFromForm() {
       if (selected) {
         settings[def.key] = parseDecimal(selected.value);
       }
+    } else if (def.type === 'text') {
+      const el = document.getElementById(`setting-${def.key}`);
+      if (el) {
+        settings[def.key] = el.value.trim();
+      }
     } else {
       const el = document.getElementById(`setting-${def.key}`);
       if (el) {
@@ -419,12 +432,19 @@ function resetSettingsToDefault() {
 
 // Logbook Screen Interaction
 function renderLogbook() {
+  const settings = getSettings();
   const logs = getLogs();
+
+  const patientNameElem = document.getElementById('logbook-patient-name');
+  if (patientNameElem) {
+    patientNameElem.textContent = settings.patient_name ? settings.patient_name : 'Naam niet ingevuld';
+  }
+
   const container = document.getElementById('log-list');
   container.innerHTML = '';
 
   if (logs.length === 0) {
-    container.innerHTML = '<p style="text-align: center; color: #666;">Geen metingen in het logboek.</p>';
+    container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px 0;">Geen metingen in deze periode.</p>';
     return;
   }
 
@@ -523,6 +543,7 @@ function handleImportJSON(event) {
 }
 
 function printLogbook() {
+  renderLogbook();
   window.print();
 }
 

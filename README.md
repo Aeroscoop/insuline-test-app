@@ -9,7 +9,8 @@ Een kleine web-app voor het testen van een bolus calculator met een diëtist.
 - Volledig in het Nederlands.
 - Mobiel-eerst ontwerp met grote knoppen en duidelijke invoervelden.
 - Pure rekenlogica in `calc.js` gescheiden van scherm/interactie in `app.js`.
-- Opslag in `localStorage` (`app_settings` en `app_logs`).
+- Instellingen (inclusief "Naam patiënt") en logboekopslag in `localStorage` (`app_settings` en `app_logs`).
+- Rapportagefunctie via een actieve "Rapport (PDF)" knop die de print-weergave / window.print() triggert met patiëntnaam en logboek.
 
 ## Hoe lokaal te openen
 
