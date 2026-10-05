@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bolus Calculator - Testversie</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Bovenaan elk scherm banner -->
+  <div class="top-banner">
+    TESTVERSIE - niet voor echte dosering
+  </div>
+
+  <div class="app-container">
+    <!-- Navigatie -->
+    <nav class="nav-tabs" role="tablist">
+      <button type="button" class="nav-btn active" id="tab-calculator" onclick="switchTab('calculator')">Rekenmachine</button>
+      <button type="button" class="nav-btn" id="tab-logbook" onclick="switchTab('logbook')">Logboek</button>
+      <button type="button" class="nav-btn" id="tab-settings" onclick="switchTab('settings')">Instellingen</button>
+    </nav>
+
+    <!-- SCHERM 1: CALCULATOR / HOOFDSCHERM -->
+    <main id="calculator-screen" class="screen active">
+      <div class="card">
+        <h2>Bolus Berekenen</h2>
+        <form id="calc-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="input-glucose">Glucose (mmol/L)</label>
+            <input type="text" id="input-glucose" inputmode="decimal" placeholder="bijv. 8,5" autocomplete="off" oninput="calculateAndDisplayAdvice()">
+            <div id="error-glucose" class="error-message"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="input-koolhydraten">Koolhydraten (gram)</label>
+            <input type="text" id="input-koolhydraten" inputmode="decimal" placeholder="bijv. 45" autocomplete="off" oninput="calculateAndDisplayAdvice()">
+            <div id="error-koolhydraten" class="error-message"></div>
+          </div>
+
+          <!-- Advies weergave -->
+          <div id="advice-container" style="display: none;">
+            <div class="advice-card" onclick="openExplanationModal()" role="button" tabindex="0">
+              <div class="advice-title">Bolusadvies</div>
+              <div class="advice-value" id="advice-value-display">0,0 E</div>
+              <div class="advice-hint">Tik op het advies voor uitleg</div>
+            </div>
+
+            <!-- Waarschuwingen -->
+            <div id="warning-te-laag" class="alert alert-danger" style="display: none;">
+              ⚠️ Glucose te laag. Geen insuline spuiten.
+            </div>
+            <div id="warning-2uursregel" class="alert alert-warning" style="display: none;">
+              ℹ️ Vorige injectie was minder dan 2 uur geleden. Geen correctie toegepast.
+            </div>
+            <div id="warning-boven-max" class="alert alert-warning" style="display: none;">
+              ⚠️ Boven maximale dosis (<span id="max-dose-display">10</span> E). Overleg met behandelaar.
+            </div>
+
+            <div class="button-group" style="margin-top: 20px;">
+              <button type="button" class="btn btn-primary" onclick="saveCurrentBolus()">Opslaan in Logboek</button>
+              <button type="button" class="btn btn-secondary" onclick="clearCalculatorForm()">Wissen</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <!-- SCHERM 2: LOGBOEK -->
+    <section id="logbook-screen" class="screen">
+      <div class="card">
+        <h2>Logboek</h2>
+        <div id="patient-info-display" class="patient-header-info" style="margin-bottom: 16px; font-weight: bold; font-size: 1.1rem; color: #333;">
+          Patiënt: <span id="logbook-patient-name">Naam niet ingevuld</span>
+        </div>
+        <div id="log-list">
+          <!-- Dynamisch gevuld -->
+        </div>
+
+        <div class="button-group" style="margin-top: 20px;">
+          <button type="button" class="btn btn-outline" onclick="exportJSON()">Export JSON</button>
+          <button type="button" class="btn btn-outline" onclick="triggerImportJSON()">Import JSON</button>
+          <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="handleImportJSON(event)">
+          <button type="button" class="btn btn-primary" onclick="printLogbook()">Rapport (PDF)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCHERM 3: INSTELLINGEN -->
+    <section id="settings-screen" class="screen">
+      <div class="card">
+        <h2>Instellingen</h2>
+        <form id="settings-form" onsubmit="return false;">
+          <!-- Dynamische instellingen velden uit definitieslijst -->
+          <div id="dynamic-settings-fields"></div>
+
+          <!-- Modus selectie -->
+          <div class="form-group">
+            <label>KhR en ISF Modus</label>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="modus" value="enkel" onchange="toggleModusView()">
+                Een KhR/ISF voor de hele dag
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="modus" value="tijdsblokken" onchange="toggleModusView()">
+                KhR/ISF per tijdsblok
+              </label>
+            </div>
+          </div>
+
+          <!-- Tijdsblokken tabel -->
+          <div id="tijdsblokken-section" style="display: none;" class="form-group">
+            <label>Tijdsblokken</label>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Naam</th>
+                    <th>Starttijd</th>
+                    <th>KhR</th>
+                    <th>ISF</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tijdsblokken-tbody">
+                  <!-- Dynamische rijen -->
+                </tbody>
+              </table>
+            </div>
+            <button type="button" class="btn btn-outline" style="margin-top: 10px; padding: 10px;" onclick="addTijdsblokRow()">+ Rij toevoegen</button>
+          </div>
+
+          <div class="button-group" style="margin-top: 24px;">
+            <button type="button" class="btn btn-primary" onclick="saveSettingsFromForm()">Instellingen opslaan</button>
+            <button type="button" class="btn btn-secondary" onclick="resetSettingsToDefault()">Terug naar standaardwaarden</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <!-- Uitleg Modal / Popup -->
+  <div id="explanation-modal" class="modal-overlay" onclick="closeExplanationModalOnOverlay(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Uitleg Bolusadvies</h3>
+        <button type="button" class="modal-close" onclick="closeExplanationModal()">&times;</button>
+      </div>
+      <ul class="explanation-list">
+        <li>
+          <span>Maaltijddosis:</span>
+          <strong id="modal-maaltijd">-</strong>
+        </li>
+        <li>
+          <span>Berekende correctie:</span>
+          <strong id="modal-correctie">-</strong>
+        </li>
+        <li>
+          <span>Toegepaste correctie:</span>
+          <strong id="modal-toegepaste-correctie">-</strong>
+        </li>
+        <li>
+          <span>2-uursregel actief:</span>
+          <strong id="modal-2uursregel">-</strong>
+        </li>
+        <li>
+          <span>Totaal (voor afronding):</span>
+          <strong id="modal-totaal">-</strong>
+        </li>
+        <li>
+          <span>Afgerond advies:</span>
+          <strong id="modal-advies">-</strong>
+        </li>
+      </ul>
+      <div id="modal-extra-info" class="help-text" style="margin-bottom: 16px;"></div>
+      <button type="button" class="btn btn-primary" onclick="closeExplanationModal()">Sluiten</button>
+    </div>
+  </div>
+
+  <script src="calc.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+:root {
+  --primary-color: #0066cc;
+  --primary-hover: #0052a3;
+  --danger-color: #d9534f;
+  --warning-color: #f0ad4e;
+  --warning-bg: #fcf8e3;
+  --warning-border: #faebcc;
+  --warning-text: #8a6d3b;
+  --success-color: #5cb85c;
+  --bg-color: #f4f6f8;
+  --card-bg: #ffffff;
+  --text-color: #222222;
+  --border-color: #cccccc;
+  --focus-ring: 0 0 0 3px rgba(0, 102, 204, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* Header & Banner */
+.top-banner {
+  background-color: var(--danger-color);
+  color: white;
+  text-align: center;
+  padding: 12px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.app-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Navigation tabs */
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: #e0e4e8;
+  padding: 6px;
+  border-radius: 12px;
+}
+
+.nav-btn {
+  flex: 1;
+  padding: 14px 8px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  border: none;
+  background: transparent;
+  color: #555;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.nav-btn.active {
+  background: white;
+  color: var(--primary-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Screen visibility */
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* Card / Containers */
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid #e1e4e8;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #111;
+}
+
+/* Inputs & Form Groups */
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.help-text {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="time"],
+select {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1.25rem;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  background-color: #fafafa;
+  min-height: 54px;
+  transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="time"]:focus,
+select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  background-color: #fff;
+  box-shadow: var(--focus-ring);
+}
+
+.error-message {
+  color: var(--danger-color);
+  font-weight: bold;
+  font-size: 1rem;
+  margin-top: 6px;
+  display: none;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  width: 100%;
+  padding: 16px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  min-height: 56px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* Advice Box */
+.advice-card {
+  background-color: #eef6ff;
+  border: 2px solid #b8daff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.advice-card:hover {
+  background-color: #e2f0ff;
+}
+
+.advice-title {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  color: #004085;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.advice-value {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  line-height: 1.1;
+  margin: 10px 0;
+}
+
+.advice-hint {
+  font-size: 0.95rem;
+  color: #004085;
+  text-decoration: underline;
+}
+
+/* Alerts / Warnings */
+.alert {
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-top: 16px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.alert-warning {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+  border: 1px solid var(--warning-border);
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+/* Modal / Detailed Explanation */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 100%;
+  padding: 24px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 8px;
+}
+
+.explanation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.explanation-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Radio buttons & radio group */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: normal;
+  background: #fafafa;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.radio-label input[type="radio"] {
+  width: 22px;
+  height: 22px;
+}
+
+/* Tables for settings & logbook */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.95rem;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background: #f8f9fa;
+  font-weight: bold;
+}
+
+/* Logbook entries */
+.log-item {
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.log-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.log-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.log-values {
+  font-size: 1.05rem;
+}
+
+.log-advise {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.log-flags {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.tag-danger {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.tag-warning {
+  background: #fcf8e3;
+  color: #8a6d3b;
+}
+
+.tag-info {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+/* Print CSS */
+@media print {
+  body {
+    background: white;
+    color: black;
+    font-size: 12pt;
+  }
+
+  .top-banner,
+  .nav-tabs,
+  .button-group,
+  .btn,
+  .modal-overlay,
+  #calculator-screen,
+  #settings-screen {
+    display: none !important;
+  }
+
+  #logbook-screen {
+    display: block !important;
+  }
+
+  .card {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+
+  .log-item {
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+}
