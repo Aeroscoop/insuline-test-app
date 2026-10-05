@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bolus Calculator - Testresultaten</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 16px;
+      background-color: #f4f6f8;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .banner {
+      background-color: #d9534f;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      font-weight: bold;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-top: 0;
+    }
+    .summary {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 4px;
+    }
+    .summary.all-passed {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .summary.has-failed {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f8f9fa;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      font-weight: bold;
+      border-radius: 4px;
+      color: white;
+      font-size: 0.85rem;
+    }
+    .badge-pass {
+      background-color: #28a745;
+    }
+    .badge-fail {
+      background-color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="banner">TESTVERSIE - niet voor echte dosering</div>
+    <h1>Bolus Calculator - Unittests</h1>
+    <div id="summary" class="summary">Tests worden uitgevoerd...</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Test omschrijving</th>
+          <th>Status</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody id="test-results">
+      </tbody>
+    </table>
+  </div>
+
+  <script src="calc.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const resultsContainer = document.getElementById('test-results');
+      const summaryContainer = document.getElementById('summary');
+
+      if (typeof TEST_CASES === 'undefined' || typeof calculate === 'undefined') {
+        summaryContainer.textContent = 'Fout: calc.js kon niet geladen worden.';
+        summaryContainer.className = 'summary has-failed';
+        return;
+      }
+
+      let passedCount = 0;
+      let totalCount = TEST_CASES.length;
+
+      TEST_CASES.forEach((tc, idx) => {
+        const tr = document.createElement('tr');
+        let isPass = false;
+        let detailsText = '';
+
+        try {
+          if (tc.customTest) {
+            isPass = !!tc.customTest();
+            detailsText = isPass ? 'Afrondingstest geslaagd' : 'Afrondingstest mislukt';
+          } else {
+            const res = calculate(tc.input, tc.settings, tc.lastBolusTime, tc.now);
+            isPass = true;
+            let mismatches = [];
+
+            for (const key in tc.expected) {
+              if (key === 'vlaggen') {
+                for (const vKey in tc.expected.vlaggen) {
+                  if (res.vlaggen[vKey] !== tc.expected.vlaggen[vKey]) {
+                    isPass = false;
+                    mismatches.push(`vlag ${vKey}: ${res.vlaggen[vKey]} != ${tc.expected.vlaggen[vKey]}`);
+                  }
+                }
+              } else if (Math.abs(res[key] - tc.expected[key]) > 0.0001) {
+                isPass = false;
+                mismatches.push(`${key}: ${res[key]} != ${tc.expected[key]}`);
+              }
+            }
+
+            if (isPass) {
+              detailsText = `Advies: ${res.afgerond_advies} E (totaal: ${res.totaal.toFixed(2)})`;
+            } else {
+              detailsText = `Afwijking: ${mismatches.join(', ')}`;
+            }
+          }
+        } catch (e) {
+          isPass = false;
+          detailsText = `Fout tijdens uitvoering: ${e.message}`;
+        }
+
+        if (isPass) passedCount++;
+
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${tc.name}</td>
+          <td><span class="badge ${isPass ? 'badge-pass' : 'badge-fail'}">${isPass ? 'GESLAAGD' : 'MISLUKT'}</span></td>
+          <td>${detailsText}</td>
+        `;
+        resultsContainer.appendChild(tr);
+      });
+
+      if (passedCount === totalCount) {
+        summaryContainer.textContent = `Alle ${totalCount} tests zijn succesvol geslaagd!`;
+        summaryContainer.className = 'summary all-passed';
+      } else {
+        summaryContainer.textContent = `${passedCount} van de ${totalCount} tests geslaagd. ${totalCount - passedCount} mislukt.`;
+        summaryContainer.className = 'summary has-failed';
+      }
+    });
+  </script>
+</body>
+</html>
